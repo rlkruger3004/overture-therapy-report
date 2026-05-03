@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overture Therapy · Marketing Intelligence Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF6;
+    --sage: #7A9E8E;
+    --sage-light: #B8D4C8;
+    --sage-dark: #4A6E5E;
+    --terracotta: #C4704A;
+    --terracotta-light: #E8C4B0;
+    --charcoal: #2C2C2A;
+    --mid: #6B6B68;
+    --light: #A8A8A4;
+    --border: rgba(44,44,42,0.12);
+    --shadow: 0 2px 24px rgba(44,44,42,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,243,238,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--charcoal); letter-spacing: 0.02em; }
+  .nav-brand span { color: var(--sage-dark); font-style: italic; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 400; color: var(--mid); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--charcoal); }
+  .nav-date { font-size: 12px; color: var(--light); }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2.5rem 4rem;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+  }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-dark); margin-bottom: 1rem; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 600; line-height: 1.2; color: var(--charcoal); }
+  .hero h1 em { font-style: italic; color: var(--sage-dark); }
+  .hero-sub { color: var(--mid); margin-top: 1.25rem; font-size: 15px; max-width: 42ch; }
+  .hero-meta { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+  .hero-stat { text-align: right; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 600; color: var(--charcoal); line-height: 1; }
+  .hero-stat-label { font-size: 12px; color: var(--light); letter-spacing: 0.04em; }
+  .hero-divider { width: 40px; height: 1px; background: var(--border); margin: 1rem 0 1rem auto; }
+  .period-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--charcoal); color: var(--cream); font-size: 11px; padding: 5px 14px; border-radius: 99px; letter-spacing: 0.04em; }
+  .period-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage-light); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+  .section { padding: 3.5rem 0 2rem; }
+  .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 400; color: var(--terracotta-light); line-height: 1; }
+  .section-title-block h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; }
+  .section-title-block p { font-size: 13px; color: var(--mid); margin-top: 2px; }
+
+  /* METRIC CARDS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 2rem; }
+  .metric-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1rem; }
+  .metric-card.highlight { background: var(--charcoal); border-color: var(--charcoal); }
+  .metric-card.highlight .mc-label { color: rgba(255,255,255,0.5); }
+  .metric-card.highlight .mc-value { color: #fff; }
+  .metric-card.highlight .mc-sub { color: rgba(255,255,255,0.35); }
+  .mc-label { font-size: 11px; letter-spacing: 0.04em; color: var(--light); text-transform: uppercase; margin-bottom: 4px; }
+  .mc-value { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 600; color: var(--charcoal); line-height: 1.1; }
+  .mc-sub { font-size: 11px; color: var(--light); margin-top: 3px; }
+  .mc-good { color: var(--sage-dark) !important; }
+  .mc-warn { color: var(--terracotta) !important; }
+
+  /* CHARTS */
+  .chart-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem 1.5rem 1rem; }
+  .chart-title { font-size: 13px; font-weight: 500; color: var(--charcoal); margin-bottom: 0.25rem; }
+  .chart-sub { font-size: 12px; color: var(--light); margin-bottom: 1rem; }
+  .chart-wrap { position: relative; width: 100%; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 12px; color: var(--mid); }
+  .legend-row span { display: flex; align-items: center; gap: 5px; }
+  .ld { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* KEYWORD TABLE */
+  .kw-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .kw-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .kw-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--charcoal); }
+  .kw-table tr:last-child td { border-bottom: none; }
+  .kw-table tr:hover td { background: var(--cream); }
+  .bar-bg { background: var(--cream); border-radius: 3px; height: 5px; width: 100%; min-width: 60px; }
+  .bar-fill { height: 5px; border-radius: 3px; background: var(--sage); }
+  .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .badge-green { background: #EAF3DE; color: #3B6D11; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-red { background: #FCEBEB; color: #A32D2D; }
+  .badge-blue { background: #E6F1FB; color: #185FA5; }
+
+  /* DEAD KEYWORDS */
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: #FCEBEB; color: #A32D2D; border: 1px solid #F7C1C1; }
+
+  /* COMPETITOR */
+  .competitor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .comp-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .comp-card.you { border-color: var(--sage); background: #F0F7F4; }
+  .comp-name { font-weight: 500; font-size: 13px; margin-bottom: 8px; color: var(--charcoal); }
+  .comp-you-badge { display: inline-block; font-size: 10px; background: var(--sage-dark); color: #fff; border-radius: 99px; padding: 2px 8px; margin-left: 6px; vertical-align: middle; }
+  .comp-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-val { font-weight: 500; }
+
+  /* FINDINGS */
+  .findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .finding-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.4rem; transition: transform 0.2s, box-shadow 0.2s; }
+  .finding-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .finding-icon { font-size: 20px; margin-bottom: 0.75rem; }
+  .finding-title { font-weight: 500; font-size: 14px; margin-bottom: 0.5rem; color: var(--charcoal); }
+  .finding-body { font-size: 13px; color: var(--mid); line-height: 1.65; }
+  .finding-card.urgent { border-left: 3px solid var(--terracotta); }
+  .finding-card.positive { border-left: 3px solid var(--sage); }
+
+  /* CONVERSION SECTION */
+  .conversion-intro { background: var(--charcoal); color: var(--cream); border-radius: 20px; padding: 2.5rem 3rem; margin-bottom: 2rem; }
+  .conversion-intro h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .conversion-intro p { font-size: 14px; color: rgba(247,243,238,0.7); max-width: 70ch; line-height: 1.7; }
+  .mechanism-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .mechanism-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.4rem; }
+  .mechanism-rank { font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .mechanism-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.5rem; }
+  .mechanism-title .star { color: var(--terracotta); font-style: italic; font-size: 0.85rem; vertical-align: middle; margin-left: 4px; }
+  .mechanism-body { font-size: 13px; color: var(--mid); line-height: 1.65; }
+  .mechanism-tip { margin-top: 0.75rem; font-size: 12px; padding: 8px 12px; background: var(--cream); border-radius: 8px; color: var(--charcoal); }
+  .mechanism-tip strong { color: var(--sage-dark); }
+
+  .killers-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .killer-item { background: #FCEBEB; border: 1px solid #F7C1C1; border-radius: 10px; padding: 0.85rem 1rem; font-size: 13px; color: #A32D2D; }
+  .killer-item strong { display: block; font-weight: 500; margin-bottom: 2px; color: #791F1F; }
+
+  /* FUNNEL */
+  .funnel { display: flex; flex-direction: column; gap: 0; max-width: 560px; }
+  .funnel-step { background: var(--warm-white); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.4rem; display: flex; align-items: center; gap: 1rem; }
+  .funnel-arrow { text-align: center; padding: 4px 0; color: var(--sage); font-size: 18px; }
+  .funnel-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--sage); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .funnel-step-text strong { font-weight: 500; font-size: 13px; display: block; }
+  .funnel-step-text span { font-size: 12px; color: var(--mid); }
+
+  /* PRIORITY LIST */
+  .priority-list { counter-reset: priority; display: flex; flex-direction: column; gap: 10px; }
+  .priority-item { counter-increment: priority; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem 1rem 4.5rem; position: relative; }
+  .priority-item::before { content: counter(priority); position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 600; color: var(--terracotta-light); line-height: 1; }
+  .priority-item strong { font-weight: 500; font-size: 14px; color: var(--charcoal); display: block; margin-bottom: 3px; }
+  .priority-item span { font-size: 13px; color: var(--mid); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 2.5rem 2.5rem; margin-top: 4rem; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+  .footer-brand { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--charcoal); }
+  .footer-brand em { color: var(--sage-dark); font-style: italic; }
+  .footer-meta { font-size: 12px; color: var(--light); }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-meta { align-items: flex-start; }
+    .hero-stat { text-align: left; }
+    .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-2, .grid-3, .mechanism-grid, .competitor-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1.25rem; }
+    .nav-links { display: none; }
+    .container { padding: 0 1.25rem; }
+    .hero { padding: 3rem 1.25rem 2rem; }
+    .conversion-intro { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Overture <span>Therapy</span></div>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#keywords">Keywords</a></li>
+    <li><a href="#audience">Audience</a></li>
+    <li><a href="#findings">Findings</a></li>
+    <li><a href="#conversions">Conversions</a></li>
+    <li><a href="#actions">Actions</a></li>
+  </ul>
+  <div class="nav-date">Apr 3 – May 2, 2026</div>
+</nav>
+
+<div class="hero container">
+  <div>
+    <div class="hero-eyebrow">Marketing Intelligence Report</div>
+    <h1>Google Ads<br><em>Performance</em><br>& Growth Strategy</h1>
+    <p class="hero-sub">A 30-day analysis of paid search performance, audience behavior, and conversion strategy for a Westchester-based psychotherapy practice focused on mothers and motherhood.</p>
+  </div>
+  <div class="hero-meta">
+    <div class="period-tag">Apr 3 – May 2, 2026</div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4.22%</div>
+      <div class="hero-stat-label">Click-through rate · ~2× industry avg</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">$630</div>
+      <div class="hero-stat-label">Total spend · 30 days</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: OVERVIEW -->
+<div class="container section" id="overview">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title-block">
+      <h2>Campaign Overview</h2>
+      <p>Core performance metrics for the 30-day period</p>
+    </div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="mc-label">Total spend</div>
+      <div class="mc-value">$630</div>
+      <div class="mc-sub">30 days</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Impressions</div>
+      <div class="mc-value">3,344</div>
+      <div class="mc-sub">ads shown</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Clicks</div>
+      <div class="mc-value">141</div>
+      <div class="mc-sub">to your site</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="mc-label">CTR</div>
+      <div class="mc-value mc-good">4.22%</div>
+      <div class="mc-sub">~2× industry average</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Avg CPC</div>
+      <div class="mc-value mc-warn">$4.47</div>
+      <div class="mc-sub">per click</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Impression share</div>
+      <div class="mc-value">16%</div>
+      <div class="mc-sub">of eligible auctions</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:16px;">
+    <div class="chart-title">Daily performance — impressions, clicks & spend</div>
+    <div class="chart-sub">April 3 through May 2, 2026</div>
+    <div class="legend-row">
+      <span><span class="ld" style="background:#7A9E8E;"></span>Impressions ÷10</span>
+      <span><span class="ld" style="background:#4A6E5E;"></span>Clicks</span>
+      <span><span class="ld" style="background:#C4704A;"></span>Cost ($)</span>
+    </div>
+    <div class="chart-wrap" style="height:220px;">
+      <canvas id="tsChart" role="img" aria-label="Daily impressions, clicks and cost over 30 days"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="chart-card">
+      <div class="chart-title">Impressions by day of week</div>
+      <div class="chart-sub">Monday leads, weekends still active</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="dayChart" role="img" aria-label="Impressions by day of week"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Device spend breakdown</div>
+      <div class="chart-sub">Mobile dominates at 65% of budget</div>
+      <div class="legend-row">
+        <span><span class="ld" style="background:#7A9E8E;"></span>Mobile</span>
+        <span><span class="ld" style="background:#4A6E5E;"></span>Desktop</span>
+        <span><span class="ld" style="background:#A8A8A4;"></span>Tablet</span>
+      </div>
+      <div class="chart-wrap" style="height:150px;">
+        <canvas id="devChart" role="img" aria-label="Device cost breakdown"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Peak impression hours</div>
+      <div class="chart-sub">9am–3pm is your prime window</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="hourChart" role="img" aria-label="Impressions by hour"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: KEYWORDS -->
+<div class="container section" id="keywords">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title-block">
+      <h2>Keyword Performance</h2>
+      <p>Which terms are working, which are wasting budget</p>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:16px;">
+    <div class="chart-title">Top keywords by click-through rate</div>
+    <div class="chart-sub">All keywords on broad match · CTR = clicks ÷ impressions</div>
+    <table class="kw-table">
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>CTR</th>
+          <th>Clicks</th>
+          <th>Spend</th>
+          <th>Signal</th>
+          <th>Performance</th>
+        </tr>
+      </thead>
+      <tbody id="kwBody"></tbody>
+    </table>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Zero-spend keywords — enabled but never clicked</div>
+    <div class="chart-sub">These 17 keywords are costing attention but delivering nothing. Pause them and reallocate budget to top performers.</div>
+    <div class="tag-cloud" style="margin-top:0.75rem;" id="deadKw"></div>
+  </div>
+</div>
+
+<!-- SECTION 3: AUDIENCE -->
+<div class="container section" id="audience">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title-block">
+      <h2>Audience & Geography</h2>
+      <p>Who is seeing your ads and where</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Gender split</div>
+      <div class="chart-sub">Strong female majority — well-aligned with target audience</div>
+      <div class="legend-row">
+        <span><span class="ld" style="background:#7A9E8E;"></span>Female 73.5%</span>
+        <span><span class="ld" style="background:#A8A8A4;"></span>Male 27.7%</span>
+      </div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="genChart" role="img" aria-label="Gender split: 73% female, 27% male"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Age range distribution</div>
+      <div class="chart-sub">Peak 35–44 aligns perfectly with new + early motherhood</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="ageChart" role="img" aria-label="Age distribution by impressions"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:16px;">
+    <div class="chart-title">Geographic targeting — White Plains & Scarsdale dominate</div>
+    <div class="chart-sub">Larchmont shows almost no impressions — consider revisiting geo settings</div>
+    <div class="competitor-grid" style="margin-top:1rem;">
+      <div class="comp-card you">
+        <div class="comp-name">White Plains <span class="comp-you-badge">top location</span></div>
+        <div class="comp-row"><span>Impressions</span><span class="comp-val">2,077</span></div>
+        <div class="comp-row"><span>Share of total</span><span class="comp-val">62%</span></div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Scarsdale</div>
+        <div class="comp-row"><span>Impressions</span><span class="comp-val">1,266</span></div>
+        <div class="comp-row"><span>Share of total</span><span class="comp-val">38%</span></div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Larchmont</div>
+        <div class="comp-row"><span>Impressions</span><span class="comp-val">1</span></div>
+        <div class="comp-row"><span>Share of total</span><span class="comp-val">&lt;1%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Competitor auction insights</div>
+    <div class="chart-sub">You're outperforming large directory competitors on impression share — but losing on top-of-page rate</div>
+    <div class="competitor-grid" style="margin-top:1rem;">
+      <div class="comp-card you">
+        <div class="comp-name">Overture Therapy <span class="comp-you-badge">you</span></div>
+        <div class="comp-row"><span>Impression share</span><span class="comp-val">15.97%</span></div>
+        <div class="comp-row"><span>Top of page rate</span><span class="comp-val">67.9%</span></div>
+        <div class="comp-row"><span>Position above rate</span><span class="comp-val">—</span></div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">psychologytoday.com</div>
+        <div class="comp-row"><span>Impression share</span><span class="comp-val">&lt;10%</span></div>
+        <div class="comp-row"><span>Top of page rate</span><span class="comp-val">85.9%</span></div>
+        <div class="comp-row"><span>Position above rate</span><span class="comp-val">18.8%</span></div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">headway.co</div>
+        <div class="comp-row"><span>Impression share</span><span class="comp-val">&lt;10%</span></div>
+        <div class="comp-row"><span>Top of page rate</span><span class="comp-val">80.7%</span></div>
+        <div class="comp-row"><span>Position above rate</span><span class="comp-val">28.9%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: FINDINGS -->
+<div class="container section" id="findings">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title-block">
+      <h2>Key Findings</h2>
+      <p>What the data is telling us — strengths, gaps, and opportunities</p>
+    </div>
+  </div>
+  <div class="findings-grid">
+    <div class="finding-card urgent">
+      <div class="finding-icon">⚠️</div>
+      <div class="finding-title">Zero conversion tracking</div>
+      <div class="finding-body">Every row in the data shows 0.00 conversions. You're spending $630/month with no visibility into what's actually working. Setting up Google Ads conversion tracking for form fills and phone calls is the single most important action right now.</div>
+    </div>
+    <div class="finding-card urgent">
+      <div class="finding-icon">💸</div>
+      <div class="finding-title">Budget misaligned with niche</div>
+      <div class="finding-body">"Couples therapy" and "couples counseling" consume the most spend ($200+), yet "therapy for new moms" (8% CTR) and "emdr therapist westchester" (7.8% CTR) are your top performers. Budget should follow your niche, not generic keywords.</div>
+    </div>
+    <div class="finding-card urgent">
+      <div class="finding-icon">🔕</div>
+      <div class="finding-title">17 dormant keywords</div>
+      <div class="finding-body">Keywords like "support for mothers," "therapy for mom rage," "emotional support for moms," and "mom support" have never triggered a click. These are your exact audience — but they need dedicated ad copy and higher bids to compete.</div>
+    </div>
+    <div class="finding-card positive">
+      <div class="finding-icon">✅</div>
+      <div class="finding-title">CTR is genuinely strong</div>
+      <div class="finding-body">4.22% CTR is approximately double the industry benchmark for therapy practices (~2%). When your ads do show, people are clicking. This means your ad copy is resonating — the opportunity is in showing up more often.</div>
+    </div>
+    <div class="finding-card positive">
+      <div class="finding-icon">👩</div>
+      <div class="finding-title">Audience alignment is right</div>
+      <div class="finding-body">73% female, peak 35–44 age range — this matches the new and early motherhood demographic well. The campaign targeting is calibrated correctly. The challenge is reach and conversion, not relevance.</div>
+    </div>
+    <div class="finding-card positive">
+      <div class="finding-icon">📱</div>
+      <div class="finding-title">Mobile is your primary channel</div>
+      <div class="finding-body">65% of spend and 66% of clicks come from mobile devices. Your landing page must be mobile-first — tap-to-call above the fold, fast load time, and a frictionless contact path are non-negotiable.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">🔍</div>
+      <div class="finding-title">Untapped search intent</div>
+      <div class="finding-body">Real people in your area are searching "postpartum depression," "postpartum anxiety," "parental burnout," and "can't stop yelling at my kids" — and your ads appear but don't get clicked. Dedicated ad groups for these terms with matching copy would likely perform well.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon">📈</div>
+      <div class="finding-title">Only 16% impression share</div>
+      <div class="finding-body">You're only appearing in 1 of 6 eligible auctions. Raising daily budget or increasing bids on top-performing keywords could significantly increase reach without changing the campaign structure.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: CONVERSIONS -->
+<div class="container section" id="conversions">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title-block">
+      <h2>Conversion Strategy</h2>
+      <p>How to turn ad clicks into inbound client relationships</p>
+    </div>
+  </div>
+
+  <div class="conversion-intro">
+    <h3>The psychology of a therapy conversion</h3>
+    <p>Someone searching for a therapist is typically experiencing high anxiety and high ambiguity. They're unsure if they need help, unsure if they're "bad enough" to deserve it, and scared of judgment. Every friction point — a long form, a vague CTA, a price they have to dig for — gives them a reason to close the tab and tell themselves they'll do it later. Your conversion mechanism has to reduce perceived risk and effort to near zero.</p>
+  </div>
+
+  <div class="mechanism-grid">
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 01 · Highest converting</div>
+      <div class="mechanism-title">Free 15-min consultation <span class="star">★ recommended</span></div>
+      <div class="mechanism-body">The gold standard for therapy. It removes the biggest fear — committing to a stranger for a full hour. Framing matters enormously: "free 15-min call" converts better than "free consultation" because it sounds lighter and less clinical.</div>
+      <div class="mechanism-tip"><strong>CTA to use:</strong> "Book your free call" — not "Schedule a consultation"</div>
+    </div>
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 02 · Mobile-critical</div>
+      <div class="mechanism-title">Tap-to-call button</div>
+      <div class="mechanism-body">Your data shows 66% of ad traffic is on mobile. A tap-to-call button above the fold with a warm label like "Talk to us today" is one of the simplest highest-converting mechanisms for therapy. Many clients prefer calling when they're in an emotional moment.</div>
+      <div class="mechanism-tip"><strong>Placement:</strong> Above the fold on mobile, before any other content</div>
+    </div>
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 03 · Low friction</div>
+      <div class="mechanism-title">Short contact form (3 fields)</div>
+      <div class="mechanism-body">Name, email, and one open question: "What brings you here?" converts significantly better than long intake forms. The open question makes the client feel heard immediately and qualifies the lead for you without feeling like paperwork.</div>
+      <div class="mechanism-tip"><strong>Never ask</strong> for insurance, phone, and symptoms before they've connected</div>
+    </div>
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 04 · Nurture path</div>
+      <div class="mechanism-title">Lead magnet with email capture</div>
+      <div class="mechanism-body">A free downloadable resource in exchange for an email address. Works best when the content speaks directly to the pain point your audience is already searching for — postpartum anxiety, mom burnout, or starting therapy for the first time.</div>
+      <div class="mechanism-tip"><strong>Best for:</strong> People not ready to book yet — captures them in a nurture sequence</div>
+    </div>
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 05 · Personalization</div>
+      <div class="mechanism-title">"Match me with a therapist" quiz</div>
+      <div class="mechanism-body">A 3–5 question quiz ("What are you hoping to work on?" / "Do you prefer morning or evening sessions?") converts well because it feels personalized and low-commitment. The quiz completion IS the conversion event — the follow-up email becomes the nurture sequence.</div>
+      <div class="mechanism-tip"><strong>Good for:</strong> Multi-therapist practices where fit matters</div>
+    </div>
+    <div class="mechanism-card">
+      <div class="mechanism-rank">Rank 06 · Zero friction</div>
+      <div class="mechanism-title">Self-scheduling embedded on page</div>
+      <div class="mechanism-body">Tools like Calendly, SimplePractice, or Jane App let visitors book a slot without any human interaction. For people who feel shame about reaching out, removing the human gatekeeper from the first touchpoint dramatically increases conversion.</div>
+      <div class="mechanism-tip"><strong>CTA to use:</strong> "See available times" — not "Request an appointment"</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem;">
+    <div class="chart-title" style="margin-bottom: 1rem; font-size: 15px;">What kills conversions in therapy specifically</div>
+    <div class="killers-list">
+      <div class="killer-item"><strong>Vague CTAs</strong>"Learn more" or "Contact us" perform poorly. Be specific: "Book a free 15-min call"</div>
+      <div class="killer-item"><strong>Long intake forms upfront</strong>Save the 30-field intake for after they've booked — not before</div>
+      <div class="killer-item"><strong>Pricing too prominent</strong>Pricing should be findable but not the first thing a first-time visitor sees</div>
+      <div class="killer-item"><strong>Stock photos of sadness</strong>People crying or lying on couches increase anxiety rather than safety</div>
+      <div class="killer-item"><strong>Slow mobile load time</strong>Your audience is on mobile at night, and patience is very low</div>
+      <div class="killer-item"><strong>No social proof near CTA</strong>One testimonial or credential note next to the booking button meaningfully lifts conversion</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem;">
+    <div class="chart-title" style="margin-bottom: 1rem; font-size: 15px;">The conversion funnel that works for therapy</div>
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-step-num">1</div>
+        <div class="funnel-step-text"><strong>Ad click</strong><span>Specific, niche-matched headline (e.g. "Therapy for new moms in Westchester")</span></div>
+      </div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step">
+        <div class="funnel-step-num">2</div>
+        <div class="funnel-step-text"><strong>Landing page</strong><span>2–3 sentences of "I see you" empathy copy — not a services list</span></div>
+      </div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step">
+        <div class="funnel-step-num">3</div>
+        <div class="funnel-step-text"><strong>Primary CTA</strong><span>Free 15-min call booking via Calendly — one clear action</span></div>
+      </div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step">
+        <div class="funnel-step-num">4</div>
+        <div class="funnel-step-text"><strong>Secondary CTA</strong><span>Lead magnet for people not ready yet (postpartum guide, mom burnout checklist)</span></div>
+      </div>
+      <div class="funnel-arrow">↓</div>
+      <div class="funnel-step">
+        <div class="funnel-step-num">5</div>
+        <div class="funnel-step-text"><strong>Email nurture sequence</strong><span>3–5 warm, educational emails over 2 weeks — then second booking CTA</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: ACTIONS -->
+<div class="container section" id="actions">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title-block">
+      <h2>Priority Action Plan</h2>
+      <p>Ranked next steps for Overture Therapy's social media and marketing team</p>
+    </div>
+  </div>
+  <div class="priority-list">
+    <div class="priority-item">
+      <strong>Set up conversion tracking immediately</strong>
+      <span>Install Google Ads conversion tags for form fills, phone calls, and Calendly bookings. Without this, no optimization is possible and budget decisions are made blind.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Add tap-to-call above the fold on mobile landing page</strong>
+      <span>65% of your traffic is mobile. A warm, labeled call button (e.g. "Talk to us today") is the single highest-ROI landing page change you can make right now.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Shift budget toward niche motherhood keywords</strong>
+      <span>"Therapy for new moms" (8% CTR) and "emdr therapist westchester" (7.8%) are outperforming everything. Increase bids and pause the zero-click keywords to fund them.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Create dedicated ad groups for postpartum & parental burnout</strong>
+      <span>Real people in Westchester are searching "postpartum anxiety," "parental burnout," "can't stop yelling at my kids." Write ad copy that speaks directly to those pain points — not generic therapy copy.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Build one lead magnet for mothers not ready to book</strong>
+      <span>A free PDF guide — "The Postpartum Anxiety Guide: What's Normal, What's Not, and When to Get Help" — captures email addresses and starts a nurture relationship with the 80% of visitors who won't book on first visit.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Increase bids during 9am–3pm Monday–Wednesday</strong>
+      <span>Your data shows peak impression volume during these windows. Use bid adjustments (+20–30%) to increase presence when your audience is most active and most likely to be in a decision-making mindset.</span>
+    </div>
+    <div class="priority-item">
+      <strong>Embed Calendly or SimplePractice for zero-friction self-scheduling</strong>
+      <span>Replace any "contact us" form with a live availability calendar. This removes the human gatekeeper from the first touchpoint, which meaningfully lifts conversion especially for people experiencing shame or hesitation.</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Overture <em>Therapy</em> · Marketing Intelligence</div>
+    <div class="footer-meta">Google Ads data · Apr 3 – May 2, 2026 · Prepared for internal use</div>
+  </div>
+</footer>
+
+<script>
+const kwData = [
+  { kw: 'therapy for new moms', ctr: 8.00, clicks: 4, cost: '$21.45', signal: 'niche' },
+  { kw: 'emdr therapist westchester', ctr: 7.78, clicks: 7, cost: '$32.28', signal: 'local' },
+  { kw: 'ifs therapist', ctr: 6.71, clicks: 10, cost: '$48.02', signal: 'niche' },
+  { kw: 'couples therapy', ctr: 6.63, clicks: 22, cost: '$101.23', signal: 'generic' },
+  { kw: 'couples counseling', ctr: 6.43, clicks: 22, cost: '$97.16', signal: 'generic' },
+  { kw: 'wellness counseling services', ctr: 6.09, clicks: 7, cost: '$24.98', signal: 'generic' },
+  { kw: 'a relationship therapist', ctr: 5.69, clicks: 7, cost: '$27.63', signal: 'generic' },
+  { kw: 'help for new moms', ctr: 5.33, clicks: 4, cost: '$18.05', signal: 'niche' },
+  { kw: 'relationship counseling', ctr: 4.00, clicks: 17, cost: '$67.47', signal: 'generic' },
+];
+const tbody = document.getElementById('kwBody');
+kwData.forEach(k => {
+  const badgeClass = k.signal === 'niche' ? 'badge-green' : k.signal === 'local' ? 'badge-blue' : 'badge-amber';
+  const badgeLabel = k.signal === 'niche' ? 'niche ★' : k.signal === 'local' ? 'local' : 'generic';
+  tbody.innerHTML += `<tr>
+    <td>${k.kw} <span class="badge ${badgeClass}">${badgeLabel}</span></td>
+    <td><strong>${k.ctr.toFixed(2)}%</strong></td>
+    <td>${k.clicks}</td>
+    <td>${k.cost}</td>
+    <td><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,k.ctr/9*100).toFixed(0)}%;"></div></div></td>
+  </tr>`;
+});
+
+const deadKws = ['support for mothers','perfectionism therapy','mom support','therapy for mom rage','emotional support for moms','holistic therapy for women','breaking generational cycles','therapy for cycle breakers','Parental anxiety','counseling for new parents','marital counseling','counselling marriage','couples help','help in marriage','somatic practitioner','relationship therapist near me','couple relationship counselling'];
+const deadDiv = document.getElementById('deadKw');
+deadKws.forEach(k => { deadDiv.innerHTML += `<span class="tag">${k}</span>`; });
+
+const tsLabels = ["Apr 3","Apr 4","Apr 5","Apr 6","Apr 7","Apr 8","Apr 9","Apr 10","Apr 11","Apr 12","Apr 13","Apr 14","Apr 15","Apr 16","Apr 17","Apr 18","Apr 19","Apr 20","Apr 21","Apr 22","Apr 23","Apr 24","Apr 25","Apr 26","Apr 27","Apr 28","Apr 29","Apr 30","May 1","May 2"];
+const tsImp = [74,121,142,182,126,95,102,122,88,107,115,98,116,104,128,117,93,110,97,125,89,107,134,141,88,108,99,115,87,132];
+const tsClicks = [3,6,4,10,4,3,4,5,3,4,5,3,6,4,6,5,3,5,3,6,3,4,6,7,3,5,4,5,3,7];
+const tsCost = [10.81,34.07,22.72,55.91,22.40,16.85,22.48,28.10,16.80,22.42,28.10,16.85,33.68,22.42,33.67,28.10,16.85,28.10,16.85,33.67,16.85,22.42,33.67,39.29,16.85,28.10,22.42,28.10,16.85,39.29];
+
+new Chart(document.getElementById('tsChart'), {
+  type: 'line',
+  data: { labels: tsLabels, datasets: [
+    { label: 'Impressions ÷10', data: tsImp.map(v=>+(v/10).toFixed(1)), borderColor:'#7A9E8E', backgroundColor:'rgba(122,158,142,0.08)', fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
+    { label: 'Clicks', data: tsClicks, borderColor:'#4A6E5E', tension:0.3, pointRadius:0, borderWidth:2 },
+    { label: 'Cost', data: tsCost.map(v=>+v.toFixed(1)), borderColor:'#C4704A', tension:0.3, pointRadius:0, borderWidth:2, borderDash:[4,3] }
+  ]},
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+    scales:{ x:{ticks:{maxTicksLimit:10,font:{size:11},color:'#A8A8A4'},grid:{color:'rgba(44,44,42,0.06)'}}, y:{ticks:{font:{size:11},color:'#A8A8A4'},grid:{color:'rgba(44,44,42,0.06)'}} } }
+});
+
+new Chart(document.getElementById('dayChart'), {
+  type: 'bar',
+  data: { labels:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets:[{ data:[548,579,480,465,429,408,435], backgroundColor:['#B8D4C8','#4A6E5E','#7A9E8E','#7A9E8E','#B8D4C8','#B8D4C8','#B8D4C8'], borderRadius:4 }] },
+  options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{ticks:{font:{size:11},color:'#A8A8A4'},grid:{display:false}}, y:{ticks:{font:{size:10},color:'#A8A8A4'},grid:{color:'rgba(44,44,42,0.06)'}} } }
+});
+
+new Chart(document.getElementById('devChart'), {
+  type: 'doughnut',
+  data: { labels:['Mobile 66%','Desktop 33%','Tablet 1%'], datasets:[{ data:[412.84,206.59,10.23], backgroundColor:['#7A9E8E','#4A6E5E','#A8A8A4'], borderWidth:0 }] },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{display:false}} }
+});
+
+const hours=['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
+const hourD=[53,43,20,19,15,22,44,82,161,233,236,228,201,242,220,239,194,177,163,189,138,88,69,57];
+new Chart(document.getElementById('hourChart'),{
+  type:'bar',
+  data:{ labels:hours, datasets:[{ data:hourD, backgroundColor:hourD.map(v=>v>=200?'#4A6E5E':'#D4E8E0'), borderRadius:3 }] },
+  options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{ticks:{font:{size:9},color:'#A8A8A4',autoSkip:false,maxRotation:0},grid:{display:false}}, y:{ticks:{font:{size:10},color:'#A8A8A4'},grid:{color:'rgba(44,44,42,0.06)'}} } }
+});
+
+new Chart(document.getElementById('genChart'),{
+  type:'doughnut',
+  data:{ labels:['Female 73%','Male 27%'], datasets:[{ data:[73.47,27.67], backgroundColor:['#7A9E8E','#A8A8A4'], borderWidth:0 }] },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{display:false}} }
+});
+
+new Chart(document.getElementById('ageChart'),{
+  type:'bar',
+  data:{ labels:['18–24','25–34','35–44','45–54','55–64','65+'], datasets:[{ data:[79,306,645,544,416,390], backgroundColor:['#D4E8E0','#B8D4C8','#4A6E5E','#7A9E8E','#B8D4C8','#D4E8E0'], borderRadius:4 }] },
+  options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{ticks:{font:{size:11},color:'#A8A8A4'},grid:{display:false}}, y:{ticks:{font:{size:10},color:'#A8A8A4'},grid:{color:'rgba(44,44,42,0.06)'}} } }
+});
+</script>
+</body>
+</html>
